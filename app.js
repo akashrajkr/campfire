@@ -13,10 +13,11 @@ var io = require('socket.io').listen(server);
 //socket io setup
 
 var numUsers = 0;
+var clients = [];
 
 io.sockets.on('connection', function (socket) {
   var addedUser = false;
-
+  
   socket.on('new message', (data) => {
     // we tell the client to execute 'new message'
     socket.broadcast.emit('new message', {
@@ -31,6 +32,9 @@ io.sockets.on('connection', function (socket) {
 
     // we store the username in the socket session for this client
     socket.username = username;
+    clients.push(socket.username);
+    for(var i=0; i<clients.length ; i++) 
+      console.log(clients[i]);
     ++numUsers;
     addedUser = true;
     socket.emit('login', {
@@ -61,7 +65,12 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', () => {
     if (addedUser) {
       --numUsers;
-
+      for(var i=0; i<clients.length; i++) {
+        if(clients[i] === socket.username)
+          clients.splice(i,1);
+      }
+      for(var i=0; i<clients.length ; i++) 
+        console.log(clients[i]);
       // echo globally that this client has left
       socket.broadcast.emit('user left', {
         username: socket.username,
@@ -70,6 +79,8 @@ io.sockets.on('connection', function (socket) {
     }
   });
 });
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
