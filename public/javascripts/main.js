@@ -233,13 +233,22 @@ $(function() {
       log(message, {
         prepend: true
       });
+      socket.emit('room', room);
       addParticipantsMessage(data);
     });
-  
+    var room = 'first'
+    // socket.on('connect', function() {
+    //   socket.emit('room', room);
+    // })
     // Whenever the server emits 'new message', update the chat body
     socket.on('new message', (data) => {
+      console.log("message", data)
       addChatMessage(data);
     });
+
+    socket.on('message',(data) => {
+      console.log('Incoming: ', data);
+    })
   
     // Whenever the server emits 'user joined', log it in the chat body
     socket.on('user joined', (data) => {
@@ -278,5 +287,6 @@ $(function() {
     socket.on('reconnect_error', () => {
       log('attempt to reconnect has failed');
     });
+    
   
   });

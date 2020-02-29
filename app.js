@@ -18,14 +18,21 @@ var clients = [];
 io.sockets.on('connection', function (socket) {
   var addedUser = false;
   
-  socket.on('new message', (data) => {
-    // we tell the client to execute 'new message'
-    socket.broadcast.emit('new message', {
-      username: socket.username,
-      message: data
-    });
-  });
+  // socket.on('new message', (data) => {
+  //   // we tell the client to execute 'new message'
+  //   socket.broadcast.emit('new message', {
+  //     username: socket.username,
+  //     message: data
+  //   });
+    
+  // });
+  room = 'first'
+  socket.in(room).emit('new message', {
+    username: socket.username,
+    message: 'what is going on, party people?'
+  })
 
+  console.log('Sent message')
   // when the client emits 'add user', this listens and executes
   socket.on('add user', (username) => {
     if (addedUser) return;
@@ -54,6 +61,11 @@ io.sockets.on('connection', function (socket) {
     });
   });
 
+  socket.on('room', (room) => {
+    socket.join(room);
+    console.log('Room ' , room);
+  })
+
   // when the client emits 'stop typing', we broadcast it to others
   socket.on('stop typing', () => {
     socket.broadcast.emit('stop typing', {
@@ -79,6 +91,8 @@ io.sockets.on('connection', function (socket) {
     }
   });
 });
+
+
 
 
 // view engine setup
