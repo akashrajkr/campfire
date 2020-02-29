@@ -246,9 +246,9 @@ $(function() {
       addChatMessage(data);
     });
 
-    socket.on('message',(data) => {
-      console.log('Incoming: ', data);
-    })
+    // socket.on('message',(data) => {
+    //   console.log('Incoming: ', data);
+    // })
   
     // Whenever the server emits 'user joined', log it in the chat body
     socket.on('user joined', (data) => {
