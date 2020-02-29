@@ -18,18 +18,30 @@ var clients = [];
 io.sockets.on('connection', function (socket) {
   var addedUser = false;
   
-  // socket.on('new message', (data) => {
-  //   // we tell the client to execute 'new message'
-  //   socket.broadcast.emit('new message', {
-  //     username: socket.username,
-  //     message: data
-  //   });
+  socket.on('new message', (data) => {
+    // we tell the client to execute 'new message'
+    socket.broadcast.emit('new message', {
+      username: socket.username,
+      message: data
+    });
     
   // });
-  room = 'first'
-  socket.in(room).emit('new message', {
-    username: socket.username,
-    message: 'what is going on, party people?'
+
+  // room = 'first'
+  // socket.in(room).emit('new message', {
+  //   username: socket.username,
+  //   message: 'what is going on, party people?'
+  // })
+
+  socket.on('join_room', (room) => {
+    socket.join(room);
+  })
+
+  socket.on('message', ({room, message}) => {
+    socket.to(room).emit('message', {
+      message, 
+      name: socket.username
+    })
   })
 
   console.log('Sent message')
@@ -61,11 +73,6 @@ io.sockets.on('connection', function (socket) {
     });
   });
 
-  socket.on('room', (room) => {
-    socket.join(room);
-    console.log('Room ' , room);
-  })
-
   // when the client emits 'stop typing', we broadcast it to others
   socket.on('stop typing', () => {
     socket.broadcast.emit('stop typing', {
@@ -91,7 +98,7 @@ io.sockets.on('connection', function (socket) {
     }
   });
 });
-
+})
 
 
 
@@ -124,7 +131,7 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-var port = normalizePort(process.env.PORT || '3001');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 var debug = require('debug')('campfire:server');
 /**
