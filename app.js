@@ -24,25 +24,6 @@ io.sockets.on('connection', function (socket) {
       username: socket.username,
       message: data
     });
-    
-  // });
-
-  // room = 'first'
-  // socket.in(room).emit('new message', {
-  //   username: socket.username,
-  //   message: 'what is going on, party people?'
-  // })
-
-  socket.on('join_room', (room) => {
-    socket.join(room);
-  })
-
-  socket.on('message', ({room, message}) => {
-    socket.to(room).emit('message', {
-      message, 
-      name: socket.username
-    })
-  })
 
   console.log('Sent message')
   // when the client emits 'add user', this listens and executes
