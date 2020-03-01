@@ -11,7 +11,7 @@ var app = express();
 var server = app.listen(3000)
 var io = require('socket.io').listen(server);
 //socket io setup
-
+var votecount = 0
 io.sockets.on('connection', function (socket) {
     socket.on('new-user', (room, name) => {
         socket.join(room)
@@ -19,6 +19,7 @@ io.sockets.on('connection', function (socket) {
         socket.to(room).broadcast.emit('user-connected', name)
       })
       socket.on('send-chat-message', (room, message) => {
+        console.log(rooms[room])
         socket.to(room).broadcast.emit('chat-message', { message: message, name: rooms[room].users[socket.id] })
       })
       socket.on('disconnect', () => {
@@ -26,6 +27,31 @@ io.sockets.on('connection', function (socket) {
           socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id])
           delete rooms[room].users[socket.id]
         })
+      })
+
+      socket.on('kick',(data) => {
+        console.log('kick : ', data)
+        var userslist = Object.values(rooms[data.room].users)
+        if(userslist.includes(data.user)){
+          socket.to(data.room).emit('confirm-vote', {
+          user: data.user,
+          room: data.room
+        })
+        } else {
+          console.log('User does\'nt exist')
+        }
+        
+      })
+      
+      socket.on('vote', data => {
+        ++votecount
+        console.log(votecount)
+        var userslist = Object.values(rooms[data.room].users)
+        console.log('userlist', userslist.length)
+        if(userslist.length/2 <= votecount){
+          console.log('disconnecting')
+          socket.disconnect()
+        }
       })
 
 });
@@ -42,7 +68,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const rooms = {depression: {
-    users:{}
+    users:{ }
 },
 anxiety: {
     users: {}
@@ -66,7 +92,8 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  res.render('room', { roomName: req.params.room })
+
+  res.render('room', { roomName: req.params.room})
 })
 
 // catch 404 and forward to error handler
