@@ -32,7 +32,7 @@ if (messageForm != null) {
 
 socket.on('confirm-vote', data => {
   console.log(data)
-  $('.modal-body').html('Do you want to kick '+ data.user);
+  $('#kick-btn').html('kick '+ data.user+'?');
   var value = confirm('Do you want to kick '+ data.user);
   if(value === true){
     socket.emit('vote', data)
@@ -44,6 +44,7 @@ socket.on('chat-message', data => {
   var kickword = text.split(" ")[0]
   console.log(kickword)
   appendMessage(`${data.name}: ${data.message}`)
+  showMsg(data.message,1);
 })
 
 socket.on('user-connected', name => {

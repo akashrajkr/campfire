@@ -9,14 +9,10 @@
     const roomName = "<%= roomName %>"
   </script>
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Oxanium&display=swap" rel="stylesheet">
   <script defer src="javascripts/roomhome.js"></script>
   <style>
-    body {
-      padding: 0;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-    }
     #message-container {
       width: 80%;
       max-width: 1200px;
@@ -30,12 +26,14 @@
     }
     #send-container {
       position: fixed;
-      padding-bottom: 30px;
+      padding-bottom: 0px;
       bottom: 0;
       background-color: white;
-      max-width: 1200px;
-      width: 80%;
+      max-width: 100%;
+      width: 100%;
       display: flex;
+      right: 0px;
+      left: 0px;
     }
     #message-input {
       flex-grow: 1;
@@ -43,10 +41,132 @@
   </style>
 </head>
 <body>
-  <div id="message-container"></div>
-  <form id="send-container">
-    <input type="text" id="message-input">
-    <button type="submit" id="send-button">Send</button>
-  </form>
+  <!-- <button id="kick-btn" value="1"></button> -->
+  
+  <div class="grid-container">
+    <div class="chat-area">
+      <div id="message-container"></div>
+      <form id="send-container">
+        <input type="text" id="message-input" placeholder="type message here..." autocomplete="off">
+        <button type="submit" id="send-button">Send</button>
+      </form>
+    </div>
+    <div class="camp-area">
+        <div class="person1">
+            <img id="p1big" src="images/bubblebig.png" style="position: absolute; visibility: hidden; " >
+            <img id="p1small" src="images/bubblesmall.png" style="position: absolute; visibility: hidden;" >
+            <div id="p1txt" class="p1txt" style="position:absolute; width:200px;"></div>
+        </div>
+        <div class="person2">
+            <img id="p2big" src="images/bubblebig.png" style="position: absolute; visibility: hidden; " >
+            <img id="p2small" src="images/bubblesmall.png" style="position: absolute; visibility: hidden;" >
+            <div id="p2txt" class="p1txt" style="position:absolute; width:200px;"></div>
+        </div>
+        <div class="person3">
+            <img id="p3big" src="images/bubblebigR.png" style="position: absolute; visibility: hidden;" >
+            <img id="p3small" src="images/bubblesmallR.png" style="position: absolute; visibility: hidden; " >
+            <div id="p3txt" class="p1txt" style="position:absolute; width:200px;"></div>
+        </div>
+        <div class="person4">
+            <img id="p4big" src="images/bubblebigR.png" style="position: absolute; visibility: hidden; " >
+            <img id="p4small" src="images/bubblesmallR.png" style="position: absolute; visibility: hidden; "  >
+            <div id="p4txt" class="p1txt" style="position:absolute; width:200px;"></div>
+        </div>
+    </div>
+  </div>
+
+
+</body>
+<script>
+var delayBig=4000, delaySmall=2000;
+function showMsg(msg,pno)
+{            
+    var person = "p" + pno.toString();
+    if(msg.length > 25)
+    {
+        document.getElementById(person + "big").style.visibility="visible";
+        document.getElementById( person + "txt").innerHTML=msg;
+        setTimeout(function(){ 
+            document.getElementById(person + "big").style.visibility="hidden";
+            document.getElementById(person + "txt").innerHTML="";
+        }, delayBig);
+    }
+    else
+    {
+        document.getElementById(person + "small").style.visibility="visible";
+        document.getElementById(person + "txt").innerHTML=msg;
+        setTimeout(function(){
+            document.getElementById(person + "small").style.visibility="hidden"
+            document.getElementById(person + "txt").innerHTML="";
+        }, delaySmall);
+    }
+
+}
+
+showMsg("Hi, my name is preetham jaain. Roses are red, violets are blue, oh crap, i need to poo",1);
+// showMsg("Hey i'm akash",2);
+// showMsg("Hey i'm akash",3);
+// showMsg("Hey i'm akash",4);
+</script>
+<style>
+.grid-container {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    grid-template-rows: 100vh;
+    grid-template-areas: "camp-area chat-area";
+}
+
+.chat-area {       
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      grid-area: chat-area;
+   }
+
+.camp-area { 
+    background-image : url("images/final.gif");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;    
+    grid-area: camp-area; 
+              
+    }
+.person1
+{
+    position:absolute;
+    left:10%;
+    top:15%;
+    
+}
+.person2
+{
+    position:absolute;
+    left:25%;
+    top:5%;
+    
+}
+.person3
+{
+    position:absolute;
+    left:40%;
+    top:5%;
+    
+}
+.person4
+{
+    position:absolute;
+    left:55%;
+    top:15%;
+    
+}
+.p1txt
+{
+    word-wrap: break-word;
+    top:35px;
+    left:30px;
+    font-size: 20px;
+    font-family : 'Oxanium';
+}
+</style>
 </body>
 </html>
